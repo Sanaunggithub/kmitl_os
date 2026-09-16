@@ -34,7 +34,7 @@ void int_handler(int sig)
 {
     char c;
 
-    signal(sig, SIG_IGN); /* disable Ctrl-C           */
+    signal(sig, SIG_IGN); /* disable Ctrl-C      SIG_IGN ignores       masking */
     printf("OUCH, did you hit Ctrl-C?\n"
            "Do you really want to quit? [y/n] ");
     c = getchar(); /* read an input character  */

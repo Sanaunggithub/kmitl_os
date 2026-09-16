@@ -28,7 +28,7 @@ int main()
         // Child process
         signal(SIGTERM, handle_signal); // Set up signal handler
         printf("I am Child process running with PID %d, my parent is %d, I have a very happy life\n",
-               getpid(), getppid());
+               getpid(), getppid()); // getppid() - get parent process id
         while (1)
         {
             // Simulate a long-running process
