@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
-#define SIZE 1024
+#define SIZE 1024 // max size is 1023 because the last one is reserved for /0
 #define READ_SIZE 5
 int main(int argc, char **argv)
 {
@@ -25,18 +25,19 @@ int main(int argc, char **argv)
   if (pid == 0)
   {
     /* child */
-    close(pfd[1]);
+    close(pfd[1]); // close write end
+    // child waits for parent if nothing is to read yet
     while ((nread = read(pfd[0], buf_read, READ_SIZE)) != 0) {
       printf("child read %s\n", buf_read);
     }
-    close(pfd[0]);
+    close(pfd[0]); // close read end
   } else {
     /* parent */
-      close(pfd[0]);
+      close(pfd[0]); // close read end
       strcpy(buf, "hello world, hello mars, hello universe");
       sleep(2);
       /* include null terminator in write */
-      //write(pfd[1], buf, strlen(buf)+1);
+      //write(pfd[1], buf, strlen(buf)+1); // +1 means reserved for /0 else it will include from previous
       write(pfd[1], buf, strlen(buf));
       close(pfd[1]);
       wait(NULL);
