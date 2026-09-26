@@ -73,9 +73,9 @@ void main(int argc, char *argv[])
 
     wait(&status);
     printf("Server has detected the completion of its child...\n");
-    shmdt((void *)shm_ptr);
+    shmdt((void *)shm_ptr); // detach
     printf("Server has detached its shared memory...\n");
-    shmctl(shm_id, IPC_RMID, NULL);
+    shmctl(shm_id, IPC_RMID, NULL); // remove
     printf("Server has removed its shared memory...\n");
     printf("Server exits...\n");
     exit(0);

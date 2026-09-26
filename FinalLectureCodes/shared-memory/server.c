@@ -26,7 +26,7 @@ void main(int argc, char *argv[])
 {
     key_t shm_key;
     int shm_id;
-    struct Memory *shm_ptr;
+    struct Memory *shm_ptr; // pointer type depends on data type
 
     if (argc != 5)
     {
@@ -34,6 +34,7 @@ void main(int argc, char *argv[])
         exit(1);
     }
 
+    // since they are not family, we have to create a key
     shm_key = ftok(".", 'x');
     shm_id = shmget(shm_key, sizeof(struct Memory), IPC_CREAT | 0666);
     if (shm_id < 0)
@@ -50,7 +51,7 @@ void main(int argc, char *argv[])
         exit(1);
     }
     printf("Server has attached the shared memory...\n");
-    shm_ptr->status = NOT_READY;
+    shm_ptr->status = NOT_READY; // at first server is not ready
     shm_ptr->data[0] = atoi(argv[1]);
     shm_ptr->data[1] = atoi(argv[2]);
     shm_ptr->data[2] = atoi(argv[3]);
@@ -58,17 +59,17 @@ void main(int argc, char *argv[])
     printf("Server has filled %d %d %d %d to shared memory...\n",
            shm_ptr->data[0], shm_ptr->data[1],
            shm_ptr->data[2], shm_ptr->data[3]);
-    shm_ptr->status = FILLED;
+    shm_ptr->status = FILLED; 
 
     printf("Please start the client in another window...\n");
 
-    while (shm_ptr->status != TAKEN)
+    while (shm_ptr->status != TAKEN) // server wait until status is TAKEN
         sleep(1);
 
     printf("Server has detected the completion of its child...\n");
     shmdt((void *)shm_ptr);
     printf("Server has detached its shared memory...\n");
-    shmctl(shm_id, IPC_RMID, NULL);
+    shmctl(shm_id, IPC_RMID, NULL); // server remove shared memory
     printf("Server has removed its shared memory...\n");
     printf("Server exits...\n");
     exit(0);
